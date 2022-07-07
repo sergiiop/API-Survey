@@ -1,0 +1,45 @@
+{
+  "name": "api-survey",
+  "version": "1.0.0",
+  "description": "API for the survey generator aplication",
+  "main": "index.js",
+  "author": "Sergio Perez",
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "lint": "eslint",
+    "test": "cross-env PORT=1234 NODE_ENV=test jest --verbose tests/user.test.js",
+    "test:watch": "npm run test -- --watch"
+  },
+  "devDependencies": {
+    "@shelf/jest-mongodb": "^3.0.2",
+    "jest": "^28.1.2",
+    "nodemon": "2.0.16",
+    "standard": "17.0.0",
+    "supertest": "^6.2.4"
+  },
+  "dependencies": {
+    "@hapi/boom": "10.0.0",
+    "bcrypt": "^5.0.1",
+    "cors": "2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "16.0.1",
+    "express": "4.18.1",
+    "joi": "17.6.0",
+    "jsonwebtoken": "8.5.1",
+    "mongoose": "^6.4.3",
+    "mongoose-unique-validator": "^3.1.0",
+    "passport": "0.6.0",
+    "passport-local": "1.0.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json",
+    "env": {
+      "jest": true
+    }
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
