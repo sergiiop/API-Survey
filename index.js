@@ -2,7 +2,7 @@ require('./lib/mongo')
 const express = require('express')
 const routerApi = require('./routes')
 const { config } = require('./config/config')
-// const cors = require('cors')
+const cors = require('cors')
 
 // const passport = require('passport')
 
@@ -31,7 +31,7 @@ app.use(express.json())
 //     }
 //   }
 // }
-// app.use(cors(options))
+app.use(cors())
 
 // require('./utils/auth')
 

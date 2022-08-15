@@ -3,16 +3,19 @@ function logErrors (err, req, res, next) {
   next(err)
 }
 
-function errorHandler (err, req, res, next) {
-  const error = {
-    message: err.message,
-    stack: err.stack
-  }
-  if (err.name === 'CastError') {
-    res.status(400).json(error).end()
-  }
+const ERROR_HANDLERS = {
+  CastError: res =>
+    res.status(400).send(
+      { error: 'id is not a valid' }),
+  JsonWebTokenError: res => res.status(401).json({ error: 'token missing or invalid' }),
+  TokenExpiresError: res => res.status(401).json({ error: 'token expired' }),
+  defaultError: (res, { mesagge }) => res.status(500).json(mesagge).end()
+}
 
-  res.status(500).json(error).end()
+function errorHandler (err, req, res, next) {
+  console.error(err.name)
+  const handler = ERROR_HANDLERS[err.name] || ERROR_HANDLERS.defaultError
+  handler(res, err)
 }
 
 function boomErrorHandler (err, req, res, next) {

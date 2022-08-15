@@ -13,6 +13,7 @@ const router = express.Router()
 const service = new UsersService()
 
 router.get('/', async (req, res) => {
+  console.log('entre')
   const users = await service.find()
   res.json(users)
 })

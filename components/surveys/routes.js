@@ -1,9 +1,9 @@
 const express = require('express')
-
 // const UsersService = require('./service')
 // const validatorHandler = require('../../middlewares/validator.handler')
 const SurveysService = require('./service')
 const UsersService = require('../users/service')
+const userExtractor = require('../../middlewares/userExtractor')
 // const {
 //   getUserSchema,
 //   createUserSchema,
@@ -35,10 +35,13 @@ router.get(
 
 router.post(
   '/',
+  userExtractor,
   // validatorHandler(createUserSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { name, description, questions, userId } = req.body
+      const { name, description, questions } = req.body
+      // sacar userId de request
+      const { userId } = req
       const user = await userService.findbyId(userId)
       const newSurvey = await service.create(name, description, questions, user)
       res.status(201).json({
@@ -53,6 +56,7 @@ router.post(
 
 router.patch(
   '/:surveyId',
+  userExtractor,
   // validatorHandler(getUserSchema, 'params'),
   // validatorHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
@@ -72,6 +76,7 @@ router.patch(
 
 router.delete(
   '/:surveyId',
+  userExtractor,
   // validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     try {

@@ -1,5 +1,8 @@
 const User = require('./model')
 const bcrypt = require('bcrypt')
+const boom = require('@hapi/boom')
+const jwt = require('jsonwebtoken')
+const { config } = require('../../config/config')
 
 class UsersService {
   async create (username, name, password) {
@@ -17,6 +20,7 @@ class UsersService {
   }
 
   async find () {
+    console.log('find')
     return await User.find({}).populate('surveys', {
       name: 1,
       description: 1,
@@ -24,8 +28,25 @@ class UsersService {
     })
   }
 
-  async findByEmail (email) {
+  async findOne (username, password) {
+    const user = await User.findOne({ username })
+    const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.passwordHash)
+    if (!(user && passwordCorrect)) throw boom.unauthorized('Invalid username or password')
 
+    const userForToken = {
+      id: user._id,
+      username: user.username
+    }
+
+    const token = jwt.sign(userForToken, config.jwtSecret, {
+      expiresIn: 60 * 60 * 24 * 7
+    })
+
+    return {
+      name: user.name,
+      username: user.username,
+      token
+    }
   }
 
   async findbyId (id) {
