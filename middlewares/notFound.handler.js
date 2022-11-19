@@ -1,11 +1,11 @@
-const boom = require('@hapi/boom')
+import { notFound } from '@hapi/boom'
 
-function notFoundHandler (req, res) {
+function notFoundHandler(req, res) {
   const {
     output: { statusCode, payload }
-  } = boom.notFound()
+  } = notFound()
 
   res.status(statusCode).json(payload)
 }
 
-module.exports = notFoundHandler
+export default notFoundHandler

@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken')
-const { config } = require('../config/config')
+import jwt from 'jsonwebtoken'
+import { config } from '../config/config.js'
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
   const authorization = req.get('authorization')
   let token = ''
 

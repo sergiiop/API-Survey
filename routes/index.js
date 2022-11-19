@@ -1,17 +1,17 @@
-const express = require('express')
+import { Router } from 'express'
 
-const usersRouter = require('../components/users/routes')
-const surveysRouter = require('../components/surveys/routes')
-const loginRouter = require('./auth')
+import usersRouter from '../components/users/routes.js'
+import surveysRouter from '../components/surveys/routes.js'
+import authRouter from '../components/auth/routes.js'
 // const profileRouter = require('./profile/routes')
 
-const routerApi = app => {
-  const router = express.Router()
+const routerApi = (app) => {
+  const router = Router()
   app.use('/api/v1', router)
   router.use('/surveys', surveysRouter)
   router.use('/users', usersRouter)
-  router.use('/login', loginRouter)
+  router.use('/auth', authRouter)
   // router.use('/profile', profileRouter)
 }
 
-module.exports = routerApi
+export default routerApi

@@ -1,25 +1,53 @@
-const User = require('./model')
-const bcrypt = require('bcrypt')
-const boom = require('@hapi/boom')
-const jwt = require('jsonwebtoken')
-const { config } = require('../../config/config')
+import User from './model.js'
+import bcrypt from 'bcrypt'
+import boom from '@hapi/boom'
+import jwt from 'jsonwebtoken'
+import { config } from '../../config/config.js'
 
 class UsersService {
-  async create (username, name, password) {
+  async signUp(firstName, lastName, email, password, confirmPassword) {
+    const existingUser = await User.findOne({ email })
+
+    if (existingUser) {
+      throw boom.notFound('User not found')
+    }
+
+    if (password !== confirmPassword) {
+      throw boom.forbidden('Password don`t match.')
+    }
+
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
-    const user = new User({
-      username,
-      name,
-      passwordHash
+
+    const user = await User.create({
+      name: `${firstName} ${lastName}`,
+      email,
+      password: passwordHash
     })
 
-    const savedUser = await user.save()
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      config.jwtSecret,
+      {
+        expiresIn: 60 * 60 * 24 * 7
+      }
+    )
 
-    return savedUser
+    return {
+      user,
+      token
+    }
   }
 
-  async find () {
+  async findByEmail(email) {
+    const existingUser = await User.findOne({ email })
+
+    if (!existingUser) return null
+
+    return existingUser
+  }
+
+  async find() {
     console.log('find')
     return await User.find({}).populate('surveys', {
       name: 1,
@@ -28,14 +56,21 @@ class UsersService {
     })
   }
 
-  async findOne (username, password) {
-    const user = await User.findOne({ username })
-    const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.passwordHash)
-    if (!(user && passwordCorrect)) throw boom.unauthorized('Invalid username or password')
+  async signIn(email, password) {
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      throw boom.unauthorized('User doesn`t exist.')
+    }
+
+    const isPasswordCorret = await bcrypt.compare(password, user.password)
+    if (!(user && isPasswordCorret)) {
+      throw boom.unauthorized('Invalid username or password')
+    }
 
     const userForToken = {
       id: user._id,
-      username: user.username
+      email: user.email
     }
 
     const token = jwt.sign(userForToken, config.jwtSecret, {
@@ -43,23 +78,18 @@ class UsersService {
     })
 
     return {
-      name: user.name,
-      username: user.username,
+      user,
       token
     }
   }
 
-  async findbyId (id) {
+  async findbyId(id) {
     return User.findById(id)
   }
 
-  async update (id, changes) {
+  async update(id, changes) {}
 
-  }
-
-  async delete (id) {
-
-  }
+  async delete(id) {}
 }
 
-module.exports = UsersService
+export default UsersService

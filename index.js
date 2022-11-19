@@ -1,24 +1,24 @@
-require('./lib/mongo')
-const express = require('express')
-const routerApi = require('./routes')
-const { config } = require('./config/config')
-const cors = require('cors')
+import './lib/mongo.js'
+import express, { json } from 'express'
+import routerApi from './routes/index.js'
+import { config } from './config/config.js'
+import cors from 'cors'
 
 // const passport = require('passport')
 
-const {
+import {
   errorHandler,
   logErrors,
   boomErrorHandler
-} = require('./middlewares/error.handler')
-const notFoundHandler = require('./middlewares/notFound.handler')
+} from './middlewares/error.handler.js'
+import notFoundHandler from './middlewares/notFound.handler.js'
 
 // const { checkApiKey } = require('./middlewares/auth.handler')
 
 const app = express()
 const port = config.port
 
-app.use(express.json())
+app.use(json())
 
 // const whitelist = ['http://localhost:3000/', 'http://myapp.co', 'localhost']
 
@@ -54,4 +54,4 @@ const server = app.listen(port, () => {
   console.log(`Puerto Corriendo en ${port}`)
 })
 
-module.exports = { app, server }
+export default { app, server }

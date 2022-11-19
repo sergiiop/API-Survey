@@ -1,13 +1,21 @@
-const uniqueValidator = require('mongoose-unique-validator')
-const { model, Schema } = require('mongoose')
+import uniqueValidator from 'mongoose-unique-validator'
+import pkg from 'mongoose'
+const { model, Schema } = pkg
 
 const userSchema = new Schema({
-  username: {
+  name: {
     type: String,
-    unique: true
+    required: true
   },
-  name: String,
-  passwordHash: String,
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   surveys: [
     {
       type: Schema.Types.ObjectId,
@@ -21,7 +29,8 @@ userSchema.set('toJSON', {
     returnedObject.id = returnedObject._id
     delete returnedObject._id
     delete returnedObject.__v
-    delete returnedObject.passwordHash
+    delete returnedObject.password
+    delete returnedObject.surveys
   }
 })
 
@@ -29,4 +38,4 @@ const User = model('User', userSchema)
 
 userSchema.plugin(uniqueValidator)
 
-module.exports = User
+export default User

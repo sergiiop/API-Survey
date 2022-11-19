@@ -1,16 +1,16 @@
-const express = require('express')
+import { Router } from 'express'
 // const UsersService = require('./service')
 // const validatorHandler = require('../../middlewares/validator.handler')
-const SurveysService = require('./service')
-const UsersService = require('../users/service')
-const userExtractor = require('../../middlewares/userExtractor')
+import SurveysService from './service.js'
+import UsersService from '../users/service.js'
+import userExtractor from '../../middlewares/userExtractor.js'
 // const {
 //   getUserSchema,
 //   createUserSchema,
 //   updateUserSchema
 // } = require('./schema')
 
-const router = express.Router()
+const router = Router()
 const service = new SurveysService()
 const userService = new UsersService()
 
@@ -44,10 +44,13 @@ router.post(
       const { userId } = req
       const user = await userService.findbyId(userId)
       const newSurvey = await service.create(name, description, questions, user)
-      res.status(201).json({
-        message: 'Survey created successfully',
-        newSurvey
-      }).end()
+      res
+        .status(201)
+        .json({
+          message: 'Survey created successfully',
+          newSurvey
+        })
+        .end()
     } catch (error) {
       next(error)
     }
@@ -82,14 +85,17 @@ router.delete(
     try {
       const { surveyId } = req.params
       const rta = await service.delete(surveyId)
-      res.status(204).json({
-        message: 'Survey deleted successfully',
-        rta
-      }).end()
+      res
+        .status(204)
+        .json({
+          message: 'Survey deleted successfully',
+          rta
+        })
+        .end()
     } catch (error) {
       next(error)
     }
   }
 )
 
-module.exports = router
+export default router

@@ -1,6 +1,6 @@
-const express = require('express')
+import { Router } from 'express'
 
-const UsersService = require('./service')
+import UsersService from './service.js'
 // const validatorHandler = require('../../middlewares/validator.handler')
 
 // const {
@@ -9,7 +9,7 @@ const UsersService = require('./service')
 //   updateUserSchema
 // } = require('./schema')
 
-const router = express.Router()
+const router = Router()
 const service = new UsersService()
 
 router.get('/', async (req, res) => {
@@ -28,24 +28,6 @@ router.get(
       res.json(user)
     } catch (error) {
       next(error)
-    }
-  }
-)
-
-router.post(
-  '/',
-  // validatorHandler(createUserSchema, 'body'),
-  async (req, res, next) => {
-    try {
-      const body = req.body
-      const { username, name, password } = body
-      const newUser = await service.create(username, name, password)
-      res.status(201).json({
-        message: 'User created successfully',
-        newUser
-      })
-    } catch (error) {
-      res.status(400).json(error)
     }
   }
 )
@@ -86,4 +68,4 @@ router.delete(
   }
 )
 
-module.exports = router
+export default router

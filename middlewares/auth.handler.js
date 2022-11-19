@@ -1,35 +1,35 @@
-const boom = require('@hapi/boom')
+import { unauthorized } from '@hapi/boom'
 
-const { config } = require('./../config/config')
+import { config } from './../config/config.js'
 
-function checkApiKey (req, res, next) {
+function checkApiKey(req, res, next) {
   const apiKey = req.headers.api
 
   if (apiKey === config.apiKey) {
     next()
   } else {
-    next(boom.unauthorized())
+    next(unauthorized())
   }
 }
 
-function checkAdminRole (req, res, next) {
+function checkAdminRole(req, res, next) {
   const user = req.user
   if (user.role === 'admin') {
     next()
   } else {
-    next(boom.unauthorized())
+    next(unauthorized())
   }
 }
 
-function checkRoles (...roles) {
+function checkRoles(...roles) {
   return (req, res, next) => {
     const user = req.user
     if (roles.includes(user.role)) {
       next()
     } else {
-      next(boom.unauthorized())
+      next(unauthorized())
     }
   }
 }
 
-module.exports = { checkApiKey, checkAdminRole, checkRoles }
+export { checkApiKey, checkAdminRole, checkRoles }

@@ -1,9 +1,9 @@
-const boom = require('@hapi/boom')
+import { notFound } from '@hapi/boom'
 
 // const bcrypt = require('bcrypt');
 
 // const { models } = require('../../lib/sequelize')
-const Survey = require('./model')
+import Survey from './model.js'
 
 class SurveysService {
   // constructor () {
@@ -26,7 +26,7 @@ class SurveysService {
   //   }
   // }
 
-  async create (name, description, questions, user) {
+  async create(name, description, questions, user) {
     const newSurvey = new Survey({
       name,
       description,
@@ -42,7 +42,7 @@ class SurveysService {
     return savedSurvey
   }
 
-  async find () {
+  async find() {
     // const query = 'SELECT * FROM users';
     // sequelize retorna la informacion en un array
     // en la primer posicion esta la data y la segunda la metadata(más informacion del query)
@@ -58,13 +58,13 @@ class SurveysService {
     return rta
   }
 
-  async findOne (id) {
+  async findOne(id) {
     const survey = await Survey.findById(id)
-    if (!survey) throw boom.notFound('Survey not found')
+    if (!survey) throw notFound('Survey not found')
     return survey
   }
 
-  async update (id, changes) {
+  async update(id, changes) {
     const { name, description, questions } = changes
     const newSurvey = {
       name,
@@ -76,7 +76,7 @@ class SurveysService {
     return rta
   }
 
-  async delete (id) {
+  async delete(id) {
     await this.findOne(id)
     await Survey.findByIdAndDelete(id)
     // if (index === -1) throw boom.notFound('Survey not found')
@@ -87,4 +87,4 @@ class SurveysService {
   }
 }
 
-module.exports = SurveysService
+export default SurveysService

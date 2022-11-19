@@ -1,4 +1,5 @@
-const { model, Schema } = require('mongoose')
+import pkg from 'mongoose'
+const { model, Schema } = pkg
 
 const surveySchema = new Schema({
   name: String,
@@ -20,4 +21,4 @@ surveySchema.set('toJSON', {
 
 const Survey = model('Survey', surveySchema)
 
-module.exports = Survey
+export default Survey
